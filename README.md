@@ -4,12 +4,16 @@
 In this repository, we offer two methods to execute the ChP segmentation pipeline. One method involves directly executing the Python code, while the other method utilizes Docker.
 
 ## Python code
-In this way, the following input forms are accepeted:
+- In this way, the following input forms are accepeted:
 1. Single `.nii` or `.nii.gz` file
 2. A folder containing `.dcm` series
 3. A folder containing multiple Nifti files
 4. A `.txt` file where each row contains the Nifti file path
+- Procedures of running pipeline
 ```bash
+cd $WORKDIR
+mkdir weights
+# download weights from https://drive.google.com/drive/folders/1M6fItRsPwV-hlww0YUdzabq9oz-RMNB0?usp=drive_link to weights folder.
 python pipeline.py --input demo/I812923.nii.gz
 ```
 
