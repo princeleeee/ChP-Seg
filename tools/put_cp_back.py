@@ -63,22 +63,22 @@ def put_back_new(imgarray, affine, paddingrange, croprange, orig_shape=[160, 200
     return img_array_padded, new_affine
 
 def cp_way_back(pipeline_path, original_images_list):
-    brain_crop_range = get_crop_range(pipeline_path + "brain/resample/crop_range.txt")
-    ventricle_crop_range = get_crop_range(pipeline_path + "ventricle/crop_range.txt")
+    brain_crop_range = get_crop_range(pipeline_path + "/brain/resample/crop_range.txt")
+    ventricle_crop_range = get_crop_range(pipeline_path + "/ventricle/crop_range.txt")
     with open(original_images_list, 'r') as f:
         orig_images_file_text = f.read()
     
-    ven_dir = pipeline_path + 'ventricle/0_mask/'
-    ven_resampledT1_savedir = pipeline_path + 'ventricle/2_resampledT1_space/'
-    ven_origT1_savedir = pipeline_path + 'ventricle/3_orig_T1_space/'
+    ven_dir = pipeline_path + '/ventricle/0_mask/'
+    ven_resampledT1_savedir = pipeline_path + '/ventricle/2_resampledT1_space/'
+    ven_origT1_savedir = pipeline_path + '/ventricle/3_orig_T1_space/'
 
-    cp_dir = pipeline_path + 'cp/0_mask'
-    cp_refine_savedir = pipeline_path + 'cp/1_mask_refine'
-    cp_resampledT1_savedir = pipeline_path + 'cp/2_resampledT1_space'
-    cp_origT1_savedir = pipeline_path + 'cp/3_orig_T1_space'
+    cp_dir = pipeline_path + '/cp/0_mask'
+    cp_refine_savedir = pipeline_path + '/cp/1_mask_refine'
+    cp_resampledT1_savedir = pipeline_path + '/cp/2_resampledT1_space'
+    cp_origT1_savedir = pipeline_path + '/cp/3_orig_T1_space'
 
-    brain_resample_img_dir = pipeline_path + 'brain/resample'
-    brain_resample_inverse_savedir = pipeline_path + "brain/resample_inverse"
+    brain_resample_img_dir = pipeline_path + '/brain/resample'
+    brain_resample_inverse_savedir = pipeline_path + "/brain/resample_inverse"
     
     mkdirs(cp_refine_savedir)
     mkdirs(cp_resampledT1_savedir)

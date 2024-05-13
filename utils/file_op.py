@@ -151,7 +151,7 @@ class ImageData():
             # add tqdm
             for id in self.ids_orig:
                 output_name = id.split('/')[-1]+'.nii.gz'
-                convert_save_folder = self.save_dir + 'convert_dicom_to_nii'
+                convert_save_folder = os.path.join(self.save_dir, 'convert_dicom_to_nii')
                 mkdirs(convert_save_folder)
                 dcmseries2nii(id, os.path.join(convert_save_folder, output_name))
                 self.ids.append(os.path.join(convert_save_folder, output_name))
