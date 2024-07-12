@@ -34,7 +34,7 @@ if __name__ == "__main__":
         brain(nii_list, os.path.join(args.output, 'brain'))
         
         # ventricle segmentation
-        brain_img_dir = os.path.join(args.output, 'brain', 'img')
+        brain_img_dir = os.path.join(args.output, 'brain', '1_img')
         brain_img_list = [os.path.join(brain_img_dir, i) for i in os.listdir(brain_img_dir)]
         model = keras.models.load_model(ven_weights, compile=False)
         get_ventricle(brain_img_list, os.path.join(args.output, 'ventricle'), model)

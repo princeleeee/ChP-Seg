@@ -1,11 +1,13 @@
 import os
 import re
-import argparse
+import datetime
 import numpy as np
 import nibabel as nib
 from skimage.morphology import remove_small_objects
 from utils.image_op import inverse_resample
-from utils.file_op import mkdirs
+from utils.file_op import mkdirs, fixed_length_string, decorate_print
+import multiprocessing
+from functools import partial
 
 def get_crop_range(croptxt):
     refer_dict = {}
@@ -62,8 +64,61 @@ def put_back_new(imgarray, affine, paddingrange, croprange, orig_shape=[160, 200
         
     return img_array_padded, new_affine
 
-def cp_way_back(pipeline_path, original_images_list):
-    brain_crop_range = get_crop_range(pipeline_path + "/brain/resample/crop_range.txt")
+def parallel_run(nii, cp_dir, cp_refine_savedir, cp_resampledT1_savedir, cp_origT1_savedir,
+                 ven_dir, ven_resampledT1_savedir, ven_origT1_savedir,
+                 brain_resample_img_dir, brain_resample_inverse_savedir, 
+                 ventricle_crop_range, brain_crop_range,
+                 orig_images_file_text):
+    # refine cp segmentation results.
+    cp = nib.load(os.path.join(cp_dir, nii))
+    cp_data = cp.get_fdata()
+    cp_data_refine = remove_small_objects(cp_data>0, min_size=30, connectivity=3)
+    cp_refine_img = nib.Nifti1Image(cp_data_refine.astype(np.int8), affine=cp.affine)
+    nib.save(cp_refine_img, os.path.join(cp_refine_savedir, nii))
+
+    # cp restored to brain image, size 160x200x160
+    cp_in_brain_array, cp_in_brain_affine = put_back_new(cp_refine_img.get_fdata(), cp_refine_img.affine.copy(),\
+            ventricle_crop_range[nii.split('.nii')[0]][0], ventricle_crop_range[nii.split('.nii')[0]][1], orig_shape=[160, 200, 160])
+    assert cp_in_brain_array.shape == (160, 200, 160)
+
+    brain_resample_img = nib.load(os.path.join(brain_resample_img_dir, nii))    # resampled RAS 1mm^3 T1w image.
+    
+    # cp restored to resampled t1 image size
+    cp_restore_array, cp_restore_affine = put_back_new(cp_in_brain_array, cp_in_brain_affine,\
+            brain_crop_range[nii.split('.nii')[0]][0], brain_crop_range[nii.split('.nii')[0]][1], orig_shape=brain_resample_img.shape, id=os.path.join(cp_dir, nii))
+    assert cp_restore_array.shape == brain_resample_img.shape
+    cp_restore_img = nib.Nifti1Image(cp_restore_array, cp_restore_affine)
+    nib.save(cp_restore_img, os.path.join(cp_resampledT1_savedir, nii))
+
+    # ventricle restored to resampled t1 image size
+    ventricle_mask_nifti = nib.load(ven_dir+nii)
+    ven_restore_array, ven_restore_affine = put_back_new(ventricle_mask_nifti.get_fdata(), ventricle_mask_nifti.affine.copy(),\
+            brain_crop_range[nii.split('.nii')[0]][0], brain_crop_range[nii.split('.nii')[0]][1], orig_shape=brain_resample_img.shape, id=os.path.join(ven_dir, nii))
+    assert ven_restore_array.shape == brain_resample_img.shape
+    ven_restore_img = nib.Nifti1Image(ven_restore_array, ven_restore_affine)
+    nib.save(ven_restore_img, os.path.join(ven_resampledT1_savedir, nii))
+
+    # inverse resampled cp, ven and t1 to original coordinate space.
+    img_orig_path = re.findall(f".*{nii.split('.nii')[0]}.nii.*", orig_images_file_text) # original T1w image.
+    assert len(img_orig_path) == 1
+    img_orig_path = img_orig_path[0]
+    cp2origT1_space = inverse_resample(os.path.join(cp_resampledT1_savedir, nii), img_orig_path, mask=True)
+    ven2origT1_space = inverse_resample(os.path.join(ven_resampledT1_savedir, nii), img_orig_path, mask=True)
+    resampledT1_to_original_space = inverse_resample(os.path.join(brain_resample_img_dir, nii), img_orig_path, mask=False)
+
+    # save original T1w space cp, ventricle segmentation results and T1w.
+    nib.save(cp2origT1_space, os.path.join(cp_origT1_savedir, nii))
+    nib.save(ven2origT1_space, os.path.join(ven_origT1_savedir, nii))
+    nib.save(resampledT1_to_original_space, os.path.join(brain_resample_inverse_savedir, nii))
+
+    return
+
+def cp_way_back(pipeline_path, original_images_list, ncpu=8):
+    starttime = datetime.datetime.now()
+    print("\n\n")
+    print(fixed_length_string(' Put CP Back ', 100))
+    
+    brain_crop_range = get_crop_range(pipeline_path + "/brain/0_resample/crop_range.txt")
     ventricle_crop_range = get_crop_range(pipeline_path + "/ventricle/crop_range.txt")
     with open(original_images_list, 'r') as f:
         orig_images_file_text = f.read()
@@ -77,8 +132,8 @@ def cp_way_back(pipeline_path, original_images_list):
     cp_resampledT1_savedir = pipeline_path + '/cp/2_resampledT1_space'
     cp_origT1_savedir = pipeline_path + '/cp/3_orig_T1_space'
 
-    brain_resample_img_dir = pipeline_path + '/brain/resample'
-    brain_resample_inverse_savedir = pipeline_path + "/brain/resample_inverse"
+    brain_resample_img_dir = pipeline_path + '/brain/0_resample'
+    brain_resample_inverse_savedir = pipeline_path + "/brain/2_resample_inverse"
     
     mkdirs(cp_refine_savedir)
     mkdirs(cp_resampledT1_savedir)
@@ -86,48 +141,15 @@ def cp_way_back(pipeline_path, original_images_list):
     mkdirs(ven_resampledT1_savedir)
     mkdirs(ven_origT1_savedir)
     mkdirs(brain_resample_inverse_savedir)
-
-    for nii in os.listdir(cp_dir):
-        # refine cp segmentation results.
-        cp = nib.load(os.path.join(cp_dir, nii))
-        cp_data = cp.get_fdata()
-        cp_data_refine = remove_small_objects(cp_data>0, min_size=30, connectivity=3)
-        cp_refine_img = nib.Nifti1Image(cp_data_refine.astype(np.int8), affine=cp.affine)
-        nib.save(cp_refine_img, os.path.join(cp_refine_savedir, nii))
-
-        # cp restored to brain image 
-        cp_in_brain_array, cp_in_brain_affine = put_back_new(cp_refine_img.get_fdata(), cp_refine_img.affine.copy(),\
-             ventricle_crop_range[nii.split('.nii')[0]][0], ventricle_crop_range[nii.split('.nii')[0]][1], orig_shape=[160, 200, 160])
-        assert cp_in_brain_array.shape == (160, 200, 160)
-
-        brain_resample_img = nib.load(os.path.join(brain_resample_img_dir, nii))    # resampled RAS 1mm^3 T1w image.
-        
-        # cp restored to resampled t1 image size
-        cp_restore_array, cp_restore_affine = put_back_new(cp_in_brain_array, cp_in_brain_affine,\
-             brain_crop_range[nii.split('.nii')[0]][0], brain_crop_range[nii.split('.nii')[0]][1], orig_shape=brain_resample_img.shape, id=os.path.join(cp_dir, nii))
-        assert cp_restore_array.shape == brain_resample_img.shape
-        cp_restore_img = nib.Nifti1Image(cp_restore_array, cp_restore_affine)
-        nib.save(cp_restore_img, os.path.join(cp_resampledT1_savedir, nii))
-
-        # ventricle restored to resampled t1 image size
-        ventricle_mask_nifti = nib.load(ven_dir+nii)
-        ven_restore_array, ven_restore_affine = put_back_new(ventricle_mask_nifti.get_fdata(), ventricle_mask_nifti.affine.copy(),\
-             brain_crop_range[nii.split('.nii')[0]][0], brain_crop_range[nii.split('.nii')[0]][1], orig_shape=brain_resample_img.shape, id=os.path.join(ven_dir, nii))
-        assert ven_restore_array.shape == brain_resample_img.shape
-        ven_restore_img = nib.Nifti1Image(ven_restore_array, ven_restore_affine)
-        nib.save(ven_restore_img, os.path.join(ven_resampledT1_savedir, nii))
-
-        # inverse resampled cp, ven and t1 to original coordinate space.
-        img_orig_path = re.findall(f".*{nii.split('.nii')[0]}.nii.*", orig_images_file_text) # original T1w image.
-        assert len(img_orig_path) == 1
-        img_orig_path = img_orig_path[0]
-        cp2origT1_space = inverse_resample(os.path.join(cp_resampledT1_savedir, nii), img_orig_path, mask=True)
-        ven2origT1_space = inverse_resample(os.path.join(ven_resampledT1_savedir, nii), img_orig_path, mask=True)
-        resampledT1_to_original_space = inverse_resample(os.path.join(brain_resample_img_dir, nii), img_orig_path, mask=False)
-
-        # save original T1w space cp, ventricle segmentation results and T1w.
-        nib.save(cp2origT1_space, os.path.join(cp_origT1_savedir, nii))
-        nib.save(ven2origT1_space, os.path.join(ven_origT1_savedir, nii))
-        nib.save(resampledT1_to_original_space, os.path.join(brain_resample_inverse_savedir, nii))
     
+    partial_parallel_run = partial(parallel_run, cp_dir=cp_dir, cp_refine_savedir=cp_refine_savedir, cp_resampledT1_savedir=cp_resampledT1_savedir, cp_origT1_savedir=cp_origT1_savedir,
+                 ven_dir=ven_dir, ven_resampledT1_savedir=ven_resampledT1_savedir, ven_origT1_savedir=ven_origT1_savedir,
+                 brain_resample_img_dir=brain_resample_img_dir, brain_resample_inverse_savedir=brain_resample_inverse_savedir, 
+                 ventricle_crop_range=ventricle_crop_range, brain_crop_range=brain_crop_range,
+                 orig_images_file_text=orig_images_file_text)
+    with multiprocessing.Pool(ncpu) as p:
+        p.map(partial_parallel_run, os.listdir(cp_dir))
+    
+    now = datetime.datetime.now()
+    decorate_print('total running time to put choroid plexus back to original space:{}s, start time is {}, finish time is {}'.format(((now-starttime).seconds), starttime, now))
     return

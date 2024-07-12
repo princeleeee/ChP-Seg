@@ -2,7 +2,7 @@ import numpy as np
 import nibabel as nib
 import os
 import datetime
-from utils.file_op import mkdirs
+from utils.file_op import mkdirs, fixed_length_string, decorate_print
 from utils.image_op import normlize_mean_std, save_nifit, change_affine
 
 def crop_center(image_array, mask_array, crop_size=None, center_mode = 'average'):
@@ -67,6 +67,8 @@ def get_ventricle(brain_list, output_dir, model, crop=True):
     for i in [ventricle_mask_dir, ventricle_crop_dir, ventricle_mask_crop_dir]:
         mkdirs(i) 
 
+    print("\n\n")
+    print(fixed_length_string(' Ventricle Segmentation ', 100))
     starttime = datetime.datetime.now()
 
     for file_path in brain_list:
@@ -95,6 +97,6 @@ def get_ventricle(brain_list, output_dir, model, crop=True):
                 f.write(f'File:{file_path};Padding range:{padding_range};Crop range after padding:{crop_range_padded}')
 
     current_time = datetime.datetime.now()
-    print('total ventricle segmentation time:{}s, start time is {}, finish time is {}'\
+    decorate_print('total ventricle segmentation time:{}s, start time is {}, finish time is {}'\
         .format(((current_time-starttime).seconds), starttime, current_time))
 

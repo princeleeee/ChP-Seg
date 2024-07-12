@@ -196,5 +196,21 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def fixed_length_string(string, total_length, padding='*'):
+    padding_length = total_length - len(string)
+    left_padding_length = padding_length // 2
+    right_padding_length = padding_length - left_padding_length
+
+    left_padding = padding * left_padding_length
+    right_padding = padding * right_padding_length
+
+    return left_padding + string + right_padding
+
+def decorate_print(string, padding='=', total_length=100):
+    print(padding*total_length)
+    print(string)
+    print(padding*total_length)
+    return
+
 if __name__ == "__main__":
     print("Hello!")
