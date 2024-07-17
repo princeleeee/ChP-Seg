@@ -74,14 +74,14 @@ docker run -v $WEIGHTS_PATH_ON_HOST:/app/weights -v $OUTPUT_FOLDER_ON_HOST:/app/
 ## Citation
 If you find our work helpful, please consider citing:
 ```bibtex
-@article{li_associations_2024,
-    author = {Li, Jiaxin and Hu, Yueqin and Xu, Yunzhi and Feng, Xue and Meyer, Craig H. and Dai, Weiying and Zhao, Li and {for the Alzheimer’s Disease Neuroimaging Initiative}},
-    title = {Associations between the choroid plexus and tau in Alzheimer’s disease using an active learning segmentation pipeline},
-    journal = {Fluids and Barriers of the {CNS}},
-    year = {2024},
-    volume = {21},
-    number = {1},
-    pages = {56},
-    doi = {10.1186/s12987-024-00554-4}
+@article{li2024associations,
+  title={Associations between the choroid plexus and tau in Alzheimer’s disease using an active learning segmentation pipeline},
+  author={Li, Jiaxin and Hu, Yueqin and Xu, Yunzhi and Feng, Xue and Meyer, Craig H and Dai, Weiying and Zhao, Li and Alzheimer’s Disease Neuroimaging Initiative},
+  journal={Fluids and Barriers of the CNS},
+  volume={21},
+  number={1},
+  pages={56},
+  year={2024},
+  publisher={Springer}
 }
 ```
