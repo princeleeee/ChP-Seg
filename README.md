@@ -65,10 +65,25 @@ Results/
     │
     └── 3_orig_T1_space/ # ChP segmentation match images in brain/2_resample_inverse
 ```
-### 2. Docker
+### 2. Using Docker
+#### Pull the Image
 ```bash
-# download deep learning models weights from https://drive.google.com/drive/folders/1M6fItRsPwV-hlww0YUdzabq9oz-RMNB0?usp=drive_link to a folder.
-docker run -v $WEIGHTS_PATH_ON_HOST:/app/weights -v $OUTPUT_FOLDER_ON_HOST:/app/results -it --rm chp-seg bash
+docker pull batjoker1/chp-seg:v1
+```
+#### Run the Container
+- **CPU Version:**
+```bash
+docker run -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v1 bash
+```
+
+- **GPU Version (requires NVIDIA driver support):**
+```bash
+docker run --gpus all -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v1 bash
+```
+
+#### **Run Inference**
+```bash
+python pipeline.py --input File/Directory
 ```
 
 ## Citation

@@ -1,8 +1,8 @@
-FROM python:3.8.3
+FROM tensorflow/tensorflow:2.15.0-gpu
 WORKDIR /app
 COPY . /app
 RUN pip config set global.index-url https://mirrors.zju.edu.cn/pypi/web/simple
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install deepbrain --no-deps
 RUN rm -rf /root/.cache/pip/*
-RUN sed -i '1s/.*/import tensorflow.compat.v1 as tf/' /usr/local/lib/python3.8/site-packages/deepbrain/extractor.py
+RUN sed -i '1s/.*/import tensorflow.compat.v1 as tf/' /usr/local/lib/python3.11/dist-packages/deepbrain/extractor.py
