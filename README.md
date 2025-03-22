@@ -2,29 +2,71 @@
 
 This is the pipeline which proposed in the [paper](https://doi.org/10.1186/s12987-024-00554-4) published at *Fluids and Barriers of the CNS*. In this repository, we offer two methods to execute the ChP segmentation pipeline. One method involves directly executing the Python code, while the other method utilizes Docker.
 ![alt text](demo/pipeline.png)
+
+---
 ## Usage
-### 1. Python
 #### Input/Output formats
-- The following input forms are accepeted:
+- The following **input** forms are accepeted:
 1. Single NIfTI file (`.nii` or `.nii.gz`)
 2. folder containing `.dcm` series
 3. folder containing multiple NIfTI files
 4. `.txt` file where each row contains the NIfTI file path
-- Output
-Defualt: `resluts/`, you can specify custom path.
-#### Envioroments
-**Python (3.8.3)**. I believe Python 3.x should be fine, although I haven’t tested it on those versions.
-#### Procedures
+- **Output**, Defualt path: `resluts/`, you can specify custom path. [Jump to Output files structure](#outputs-structure)
+
+### Option 1: Using Docker （Recommend）
+
+#### Pull the Image
+```bash
+docker pull batjoker1/chp-seg:v1
+```
+#### Run the Container
+- **CPU Version:**
+```bash
+docker run -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v1 bash
+```
+- **GPU Version (requires NVIDIA driver support):**
+```bash
+docker run --gpus all -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v1 bash
+```
+
+#### **Run Inference**
+Once inside the container, run:
+```bash
+python pipeline.py --input File/Directory
+```
+
+### Option 2: Python source code
+#### Environment Requirements  
+Ensure that TensorFlow >2.4 is installed. Then, install the required packages listed in `requirements.txt` (no strict version requirements).
+
+#### Installation & Setup  
+Clone the repository and navigate to the project directory:  
 ```bash
 git clone https://github.com/princeleeee/ChP-Seg.git
 cd ChP-Seg
-pip install -r requirements.txt
-sed -i '1s/.*/import tensorflow.compat.v1 as tf/' /usr/local/lib/python3.8/site-packages/deepbrain/extractor.py # Necessary since Deepbrain is accomplished with Tensorlow 1.x
-mkdir weights
-# download deep learning models weights from https://drive.google.com/drive/folders/1M6fItRsPwV-hlww0YUdzabq9oz-RMNB0?usp=drive_link to weights folder.
-python pipeline.py --input demo/I812923.nii.gz  # This is a demo.
 ```
-#### Outputs structure
+
+Modify the DeepBrain package to enable TensorFlow 1.x compatibility. This is necessary because DeepBrain was originally implemented with TensorFlow 1.x. See the related [issue](https://github.com/iitzco/deepbrain/issues/6#issuecomment-620831557) for more details.
+
+For Python 3.8, run the following command:
+```bash
+sed -i '1s/.*/import tensorflow.compat.v1 as tf/' /usr/local/lib/python3.8/site-packages/deepbrain/extractor.py # Necessary since Deepbrain is accomplished with Tensorlow 1.x
+```
+
+#### Download Model Weights
+Download the pre-trained deep learning model weights from [Google Drive](https://drive.google.com/drive/folders/1M6fItRsPwV-hlww0YUdzabq9oz-RMNB0?usp=drive_link) and place them in the weights folder:
+
+```
+mkdir weights
+```
+#### Run Inference
+Once everything is set up, you can run the pipeline on a sample input:
+```
+python pipeline.py --input demo/I812923.nii.gz  # Example run
+```
+
+---
+## Outputs structure
 ```
 Results/
 ├── file_collections.txt # all files input to the pipeline.
@@ -65,26 +107,7 @@ Results/
     │
     └── 3_orig_T1_space/ # ChP segmentation match images in brain/2_resample_inverse
 ```
-### 2. Using Docker
-#### Pull the Image
-```bash
-docker pull batjoker1/chp-seg:v1
-```
-#### Run the Container
-- **CPU Version:**
-```bash
-docker run -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v1 bash
-```
 
-- **GPU Version (requires NVIDIA driver support):**
-```bash
-docker run --gpus all -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v1 bash
-```
-
-#### **Run Inference**
-```bash
-python pipeline.py --input File/Directory
-```
 
 ## Citation
 If you find our work helpful, please consider citing:
