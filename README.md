@@ -1,6 +1,8 @@
 # Choroid plexus (ChP) segmentation pipeline for T1-weighted magnetic resonance images
+**Updated on August 3, 2025.**
+This pipeline was enhanced in the [paper](https://doi.org/10.1016/j.neuroimage.2025.121392) published at **NeuroImage**.
 
-This is the pipeline which proposed in the [paper](https://doi.org/10.1186/s12987-024-00554-4) published at *Fluids and Barriers of the CNS*. In this repository, we offer two methods to execute the ChP segmentation pipeline. One method involves directly executing the Python code, while the other method utilizes Docker.
+This is the pipeline which proposed in the [paper](https://doi.org/10.1186/s12987-024-00554-4) published at **Fluids and Barriers of the CNS**. In this repository, we offer two methods to execute the ChP segmentation pipeline. One method involves directly executing the Python code, while the other method utilizes Docker.
 ![alt text](demo/pipeline.png)
 
 ---
@@ -17,16 +19,16 @@ This is the pipeline which proposed in the [paper](https://doi.org/10.1186/s1298
 
 #### Pull the Image
 ```bash
-docker pull batjoker1/chp-seg:v1
+docker pull batjoker1/chp-seg:v2
 ```
 #### Run the Container
 - **CPU Version:**
 ```bash
-docker run -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v1 bash
+docker run -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v2 bash
 ```
 - **GPU Version (requires NVIDIA driver support):**
 ```bash
-docker run --gpus all -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v1 bash
+docker run --gpus all -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v2 bash
 ```
 
 #### **Run Inference**
@@ -54,7 +56,7 @@ sed -i '1s/.*/import tensorflow.compat.v1 as tf/' /usr/local/lib/python3.8/site-
 ```
 
 #### Download Model Weights
-Download the pre-trained deep learning model weights from [Google Drive](https://drive.google.com/drive/folders/1M6fItRsPwV-hlww0YUdzabq9oz-RMNB0?usp=drive_link) and place them in the weights folder:
+Download the pre-trained deep learning model weights from [Google Drive](https://drive.google.com/drive/folders/1UHDt0jR4tI9jkskoJWX6E-DdbMk25AR5?usp=drive_link) and place them in the weights folder:
 
 ```
 mkdir weights
@@ -121,5 +123,17 @@ If you find our work helpful, please consider citing:
   pages={56},
   year={2024},
   publisher={Springer}
+}
+
+@article{LI2025121392,
+title = {Morphological changes of the choroid plexus in the lateral ventricle across the lifespan: 5551 subjects from fetus to elderly},
+journal = {NeuroImage},
+volume = {318},
+pages = {121392},
+year = {2025},
+issn = {1053-8119},
+doi = {https://doi.org/10.1016/j.neuroimage.2025.121392},
+url = {https://www.sciencedirect.com/science/article/pii/S1053811925003957},
+author = {Jiaxin Li and Yuxuan Gao and Yunzhi Xu and Weiying Dai and Yueqin Hu and Xue Feng and Dan Wu and Li Zhao}
 }
 ```

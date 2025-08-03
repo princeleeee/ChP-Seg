@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument("--output", metavar='SavePath', type=str, help='Cached files and results save path', default='results/')
     parser.add_argument("--job", metavar='Task', type=str, help='Options: "Full", "Stripping", "Ventricle", "ChoroidPlexus"', default='Full')
     parser.add_argument("--ven_weights", metavar='LateralVentricleWeights', type=str, default='weights/All_data_trainweights.200-0.05769.h5')
-    parser.add_argument("--cp_weights", metavar='ChoroidPlexusWeights', type=str, default='weights/All_data_trainweights.184-0.96731.h5')
+    parser.add_argument("--cp_weights", metavar='ChoroidPlexusWeights', type=str, default='weights/20241210-220442_all_data_trainbest_weights.h5')
     args = parser.parse_args()
 
     # os.environ['CUDA_VISIBLE_DEVICES'] = '1' # disable gpu
