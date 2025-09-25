@@ -39,7 +39,11 @@ python pipeline.py --input File/Directory
 
 ### Option 2: Python source code
 #### Environment Requirements  
-Ensure that TensorFlow >2.4 is installed. Then, install the required packages listed in `requirements.txt` (no strict version requirements).
+Ensure that TensorFlow >2.4 is installed. Then, install the required packages listed in `requirements.txt` (no strict version requirements) and Deepbrain.
+```
+pip install --no-cache-dir -r requirements.txt
+pip install deepbrain --no-deps
+```
 
 #### Installation & Setup  
 Clone the repository and navigate to the project directory:  
