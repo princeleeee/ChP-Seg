@@ -70,6 +70,7 @@ python pipeline.py --input demo/I812923.nii.gz  # Example run
 
 ---
 ## Outputs structure
+**`Results/cp/3_orig_T1_space` is the path of the ChP segmentation results for input files.**
 ```
 Results/
 ├── file_collections.txt # all files input to the pipeline.
