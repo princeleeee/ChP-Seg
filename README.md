@@ -50,10 +50,11 @@ cd ChP-Seg
 
 Modify the DeepBrain package to enable TensorFlow 1.x compatibility. This is necessary because DeepBrain was originally implemented with TensorFlow 1.x. See the related [issue](https://github.com/iitzco/deepbrain/issues/6#issuecomment-620831557) for more details.
 
-For Python 3.8, run the following command:
+For example, in my case I run the following command to enable TensorFlow 1.x compatibility: 
 ```bash
 sed -i '1s/.*/import tensorflow.compat.v1 as tf/' /usr/local/lib/python3.8/site-packages/deepbrain/extractor.py # Necessary since Deepbrain is accomplished with Tensorlow 1.x
 ```
+You can change in the similar way according to your own environment.
 
 #### Download Model Weights
 Download the pre-trained deep learning model weights from [Google Drive](https://drive.google.com/drive/folders/1UHDt0jR4tI9jkskoJWX6E-DdbMk25AR5?usp=drive_link) and place them in the weights folder:
