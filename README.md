@@ -13,7 +13,7 @@ This is the pipeline which proposed in the [paper](https://doi.org/10.1186/s1298
 2. folder containing `.dcm` series
 3. folder containing multiple NIfTI files
 4. `.txt` file where each row contains the NIfTI file path
-**Output**  
+#### Output
 Default path: `results/`  
 ChP segmentation is saved in `results/cp/3_orig_T1_space/`.  
 You can specify a custom output path.  
