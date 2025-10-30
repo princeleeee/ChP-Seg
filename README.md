@@ -13,7 +13,11 @@ This is the pipeline which proposed in the [paper](https://doi.org/10.1186/s1298
 2. folder containing `.dcm` series
 3. folder containing multiple NIfTI files
 4. `.txt` file where each row contains the NIfTI file path
-- **Output**, Defualt path: `resluts/`, you can specify custom path. [Jump to Output files structure](#outputs-structure)
+**Output**  
+Default path: `results/`  
+ChP segmentation is saved in `results/cp/3_orig_T1_space/`.  
+You can specify a custom output path.  
+For detailed intermediate results, [jump to Output files structure](#outputs-structure).
 
 ### Option 1: Using Docker （Recommend）
 
@@ -75,9 +79,9 @@ python pipeline.py --input demo/I812923.nii.gz  # Example run
 
 ---
 ## Outputs structure
-**`Results/cp/3_orig_T1_space` is the path of the ChP segmentation results for input files.**
+**`results/cp/3_orig_T1_space` is the path of the ChP segmentation results for input files.**
 ```
-Results/
+results/
 ├── file_collections.txt # all files input to the pipeline.
 │
 ├── brain/  # save the results in the preprocessing and skull stripping stage.
