@@ -58,7 +58,12 @@ You can change in the similar way according to your own environment.
 
 #### Download Model Weights
 Download the pre-trained deep learning model weights from [Google Drive](https://drive.google.com/drive/folders/1UHDt0jR4tI9jkskoJWX6E-DdbMk25AR5?usp=drive_link) and place them in the weights folder:
-
+| Version | Filename                                        | Description                    |
+| :-----: | :---------------------------------------------- | :----------------------------- |
+| **v1**  | `All_data_trainweights.184-0.96731.h5`          | ChP model weights              |
+|         | `All_data_trainweights.200-0.05769.h5`          | LVEN model weights             |
+| **v2**  | `20241210-220442_all_data_trainbest_weights.h5` | ChP model weights (updated)    |
+|         | `All_data_trainweights.200-0.05769.h5`          | LVEN model weights (unchanged) |
 ```
 mkdir weights
 ```
