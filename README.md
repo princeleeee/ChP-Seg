@@ -76,6 +76,10 @@ Once everything is set up, you can run the pipeline on a sample input:
 ```
 python pipeline.py --input demo/I812923.nii.gz  # Example run
 ```
+Or with updated model saved in 'weights/' folder
+```bash
+python pipeline.py --input demo/I812923.nii.gz --ven_weights weights/All_data_trainweights.200-0.05769.h5 --cp_weights weights/20241210-220442_all_data_trainbest_weights.h5
+```
 
 ---
 ## Outputs structure
