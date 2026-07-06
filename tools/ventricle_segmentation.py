@@ -80,7 +80,7 @@ def get_ventricle(brain_list, output_dir, model, crop=True):
 
         prediction = model.predict(x)  # dimension: [batch, x, y, z, intensity]
         mask = (prediction > 0.5).squeeze().astype(np.int8)
-        save_nifit(mask, os.path.join(ventricle_mask_dir, file_path.split('/')[-1]), img.affine)
+        save_nifit(mask, os.path.join(ventricle_mask_dir, os.path.basename(file_path)), img.affine)
 
         if crop:
             ventricle_crop, mask_crop, padding_range, crop_range_padded\
@@ -89,8 +89,8 @@ def get_ventricle(brain_list, output_dir, model, crop=True):
                 print(file_path, padding_range)
             
             new_affine = change_affine(img.affine, padding_range, crop_range_padded)
-            save_nifit(ventricle_crop, os.path.join(ventricle_crop_dir, file_path.split('/')[-1]), new_affine)
-            save_nifit(mask_crop, os.path.join(ventricle_mask_crop_dir, file_path.split('/')[-1]), new_affine)
+            save_nifit(ventricle_crop, os.path.join(ventricle_crop_dir, os.path.basename(file_path)), new_affine)
+            save_nifit(mask_crop, os.path.join(ventricle_mask_crop_dir, os.path.basename(file_path)), new_affine)
             
             with open(os.path.join(output_dir, 'crop_range.txt'), 'a') as f:
                 f.write("\n")

@@ -103,7 +103,7 @@ def crop_center(img_array, target_size, mask_array=None):
 
 def reorientation(nii_filepath, outputpath):
     _, _, _, _, resample_img_dir = outputpath
-    imageuid = nii_filepath.split('/')[-1].split('.')[0]
+    imageuid = os.path.basename(nii_filepath).split('.')[0]
     try:
         source_img = nib.load(nii_filepath)
         upsample_img = orig2ras_isotropic(source_img) # RAS+ 1mm^3
@@ -117,7 +117,7 @@ def skull_stripping(nii_files_list, outputpath):
     # os.environ['CUDA_VISIBLE_DEVICES'] = '-1' # "-1" to disable gpu
     ext = Extractor()
     for nii_filepath in nii_files_list:
-        imageuid = nii_filepath.split('/')[-1].split('.')[0]
+        imageuid = os.path.basename(nii_filepath).split('.')[0]
         try:
             upsample_img = nib.load(os.path.join(resample_img_dir, imageuid+'.nii.gz'))
             img = upsample_img.get_fdata()

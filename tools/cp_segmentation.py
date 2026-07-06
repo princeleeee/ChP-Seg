@@ -20,7 +20,7 @@ def cp(ventricle_list, output_dir, model):
 
         prediction = model.predict(x)  # dimension: [batch, x, y, z, intensity]
         mask = (prediction > 0.5).squeeze().astype(np.int8)
-        save_nifit(mask, os.path.join(mask_dir, file_path.split('/')[-1]), img.affine)
+        save_nifit(mask, os.path.join(mask_dir, os.path.basename(file_path)), img.affine)
 
     now = datetime.datetime.now()
     print('total choroid plexus segmentation running time:{}s, start time is {}, finish time is {}'.format(((now-starttime).seconds), starttime, now))

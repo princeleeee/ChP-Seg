@@ -16,7 +16,7 @@ def get_crop_range(croptxt):
     for line in alllines:
         line = line.strip()
         if not line == '':
-            key  = line.split(';')[0].split('/')[-1].split('.nii')[0]
+            key  = os.path.basename(line.split(';')[0]).split('.nii')[0]
             padding_range = line.split(';')[1].split(':')[-1]
             crop_range = line.split(';')[2].split(':')[-1]
             refer_dict[key] = [eval(padding_range), eval(crop_range)]
