@@ -42,6 +42,7 @@ python pipeline.py --input File/Directory
 ```
 
 ### Option 2: Python source code
+**Successfully run on Centos 7 and Windows 11**
 #### Environment Requirements  
 Ensure that TensorFlow >2.4 is installed. Then, install the required packages listed in `requirements.txt` (no strict version requirements) and Deepbrain (`pip install deepbrain --no-deps`).
 
