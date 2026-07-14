@@ -99,7 +99,7 @@ def parallel_run(nii, cp_dir, cp_refine_savedir, cp_resampledT1_savedir, cp_orig
     nib.save(ven_restore_img, os.path.join(ven_resampledT1_savedir, nii))
 
     # inverse resampled cp, ven and t1 to original coordinate space.
-    img_orig_path = re.findall(f".*{nii.split('.nii')[0]}.nii.*", orig_images_file_text) # original T1w image.
+    img_orig_path = [line for line in orig_images_file_text.splitlines() if nii.split('.nii')[0] in line] # original T1w image path.
     assert len(img_orig_path) == 1
     img_orig_path = img_orig_path[0]
     cp2origT1_space = inverse_resample(os.path.join(cp_resampledT1_savedir, nii), img_orig_path, mask=True)
