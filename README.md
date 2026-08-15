@@ -24,16 +24,16 @@ For detailed intermediate results, [jump to Output files structure](#outputs-str
 
 #### Pull the Image
 ```bash
-docker pull batjoker1/chp-seg:v2
+docker pull batjoker1/chp-seg:v3
 ```
 #### Run the Container
 - **CPU Version:**
 ```bash
-docker run -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v2 bash
+docker run -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v3 bash
 ```
 - **GPU Version (requires NVIDIA driver support):**
 ```bash
-docker run --gpus all -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v2 bash
+docker run --gpus all -v $OUTPUT_FOLDER_ON_HOST:/app/results -v $DATA_PATH_ON_HOST:$DATA_PATH_IN_CONTAINER -it --rm batjoker1/chp-seg:v3 bash
 ```
 
 #### **Run Inference**
@@ -69,6 +69,8 @@ Download the pre-trained deep learning model weights from [Google Drive](https:/
 | **v1**  | `All_data_trainweights.184-0.96731.h5`          | ChP model weights              |
 |         | `All_data_trainweights.200-0.05769.h5`          | LVEN model weights             |
 | **v2**  | `20241210-220442_all_data_trainbest_weights.h5` | ChP model weights (updated)    |
+|         | `All_data_trainweights.200-0.05769.h5`          | LVEN model weights (unchanged) |
+| **v3**  | `All_data_trainweights.189-0.75994.h5`          | ChP model weights (updated)    |
 |         | `All_data_trainweights.200-0.05769.h5`          | LVEN model weights (unchanged) |
 ```
 mkdir weights
