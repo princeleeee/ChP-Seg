@@ -5,3 +5,5 @@ scikit-image
 pandas
 SimpleITK
 imageio
+pyradiomics
+scikit-learn

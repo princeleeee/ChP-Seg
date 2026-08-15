@@ -5,6 +5,7 @@ from tools.skull_stripping import brain
 from tools.ventricle_segmentation import get_ventricle
 from tools.cp_segmentation import cp
 from tools.put_cp_back import cp_way_back
+from tools.get_shape_features import extract_pipeline_chp_features
 from tensorflow import keras
 
 
@@ -65,3 +66,5 @@ if __name__ == "__main__":
         raise RuntimeError('unsupported task.')
     
     cp_way_back(args.output, args.output+'/file_collections.txt')
+    
+    extract_pipeline_chp_features(args.output, args.output)

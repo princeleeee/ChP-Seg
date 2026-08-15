@@ -1,5 +1,5 @@
 # Choroid plexus (ChP) segmentation pipeline for T1-weighted magnetic resonance images
-**Updated on August 3, 2025.**
+**Updated on August 15, 2026.**
 This pipeline was enhanced in the [paper](https://doi.org/10.1016/j.neuroimage.2025.121392) published at **NeuroImage**.
 
 This is the pipeline which proposed in the [paper](https://doi.org/10.1186/s12987-024-00554-4) published at **Fluids and Barriers of the CNS**. In this repository, we offer two methods to execute the ChP segmentation pipeline. One method involves directly executing the Python code, while the other method utilizes Docker.
@@ -16,6 +16,7 @@ This is the pipeline which proposed in the [paper](https://doi.org/10.1186/s1298
 #### Output
 Default path: `results/`  
 ChP segmentation is saved in `results/cp/3_orig_T1_space/`.  
+ChP 3D shape features are saved in `results/chp_3D_shape_features.csv`.  
 You can specify a custom output path.  
 For detailed intermediate results, [jump to Output files structure](#outputs-structure).
 
@@ -82,11 +83,23 @@ Or with updated model saved in 'weights/' folder
 python pipeline.py --input demo/I812923.nii.gz --ven_weights weights/All_data_trainweights.200-0.05769.h5 --cp_weights weights/20241210-220442_all_data_trainbest_weights.h5
 ```
 
+After ChP segmentation, the pipeline automatically divides each ChP mask into two components and extracts 3D shape features. The feature table is saved as `chp_3D_shape_features.csv` under the selected output folder.
+
 ---
 ## Outputs structure
 **`results/cp/3_orig_T1_space` is the path of the ChP segmentation results for input files.**
+**`results/chp_3D_shape_features.csv` contains the ChP 3D shape features.**
+
+The feature CSV includes:
+- `file_name`: source NIfTI filename.
+- `chp_component_label`: K-means label in the divided ChP mask. Values `1` and `2` identify the two clustered ChP components from the K-means algorithm and should not be interpreted as fixed left/right anatomical labels.
+- PyRadiomics shape feature columns.
+
 ```
 results/
+├── chp_3D_shape_features.csv # ChP 3D shape features for divided ChP components.
+├── logs/
+│   └── dir_divide_normal.log # log file for dividing ChP masks into two components.
 ├── file_collections.txt # all files input to the pipeline.
 │
 ├── brain/  # save the results in the preprocessing and skull stripping stage.
@@ -126,6 +139,10 @@ results/
     └── 3_orig_T1_space/ # ChP segmentation match images in brain/2_resample_inverse
 ```
 
+
+Additional files generated for ChP shape feature extraction:
+- `results/cp/divided_0_mask/`: ChP masks divided into two components before feature extraction.
+- `results/logs/dir_divide_normal.log`: log file for the component division step.
 
 ## Citation
 If you find our work helpful, please consider citing:
