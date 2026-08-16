@@ -1,4 +1,9 @@
-# Choroid plexus (ChP) segmentation pipeline for T1-weighted magnetic resonance images
+# ChP-Seg: a choroid plexus segmentation pipeline for T1-weighted magnetic resonance images
+[![docker](https://img.shields.io/badge/docker-v3-blue)](https://hub.docker.com/r/batjoker1/chp-seg)
+[![code size](https://img.shields.io/github/languages/code-size/princeleeee/ChP-Seg)](https://github.com/princeleeee/ChP-Seg)
+[![language](https://img.shields.io/github/languages/top/princeleeee/ChP-Seg)](https://github.com/princeleeee/ChP-Seg)
+[![license](https://img.shields.io/github/license/princeleeee/ChP-Seg?color=brightgreen)](LICENSE)
+
 **Updated on August 15, 2026.**
 This pipeline was enhanced in the [paper](https://doi.org/10.1016/j.neuroimage.2025.121392) published at **NeuroImage**.
 
@@ -145,6 +150,9 @@ results/
 Additional files generated for ChP shape feature extraction:
 - `results/cp/divided_0_mask/`: ChP masks divided into two components before feature extraction.
 - `results/logs/dir_divide_normal.log`: log file for the component division step.
+
+## License
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ## Citation
 If you find our work helpful, please consider citing:
